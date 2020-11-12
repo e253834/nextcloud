@@ -23,7 +23,7 @@ cat nextcloud.part?? > nextcloud.tar.xz
 tar -xJvf nextcloud.tar.xz
 rm -rf html
 mv nextcloud html
-mv ~/nextcloud/pgsql.php .
+mv ~/nextcloud/pgsql.php html/
 chown -R www-data html
 rm nextcloud.part??
 cd html
