@@ -20,12 +20,12 @@ mv nextcloud html
 chown -R www-data html
 cd html
 sudo -u www-data php occ maintenance:install --database "pgsql" --database-name "nextcloud" --database-user "nextcloud" --database-pass "nextcloud" --admin-user "admin" --admin-pass "admin"
-sleep 10
+sleep 15
 grep -v ");" config/config.php > config/config2.php
 echo ");" >> config/config2.php
 mv config/config2.php config/config.php
 cat config/config.php
-sleep 10
+sleep 15
 popd
 
 #wget https://download.nextcloud.com/server/installer/setup-nextcloud.php -O /var/www/html/setup.php
