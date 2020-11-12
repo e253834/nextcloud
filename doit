@@ -13,8 +13,9 @@ chown www-data /var/www/html
 service apache2 restart
 
 pushd /var/www
-mv ~/nextcloud/nextcloud.z?? .
-unzip nextcloud.zip
+mv ~/nextcloud/nextcloud.part?? .
+cat nextcloud.part?? > nextcloud.tar.xz
+tar -xJvf nextcloud.tar.xz
 rm -rf html
 mv nextcloud html
 mv ~/nextcloud/pgsql.php .
