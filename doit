@@ -30,6 +30,7 @@ grep -v ");" config/config.php > config/config2.php
 echo "  'allow_local_remote_servers' => 'true'," >> config/config2.php
 echo ");" >> config/config2.php
 mv config/config2.php config/config.php
+sed -i 's/localhost/*/g' config/config.php
 chown www-data config/config.php
 popd
 
