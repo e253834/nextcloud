@@ -24,6 +24,7 @@ sleep 15
 grep -v ");" config/config.php > config/config2.php
 echo ");" >> config/config2.php
 mv config/config2.php config/config.php
+chown www-data config/config.php
 cat config/config.php
 sleep 15
 popd
