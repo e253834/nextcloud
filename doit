@@ -13,9 +13,9 @@ chown www-data /var/www/html
 service apache2 restart
 
 pushd /var/www
+mv ~/nextcloud/nextcloud.z?? .
+unzip nextcloud.zip
 rm -rf html
-curl -s https://nextcloud.com/install/#instructions-server | grep -o -E 'href="([^"#]+)"' | cut -d'"' -f2 | grep "/releases/" | grep ".zip" | grep -v ".zip." | head -1 | xargs -n1 wget
-unzip nextcloud*.zip
 mv nextcloud html
 chown -R www-data html
 cd html
