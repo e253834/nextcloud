@@ -1,0 +1,52 @@
+#!/bin/bash
+
+hostnamectl set-hostname apache2
+sed -i 's/x6/apache2/g'
+
+umount /var/www/html
+chgrp vboxsf /var/www
+apt install -y apache2 postgresql php
+usermod -aG vboxsf www-data
+sed -i 's/nss-lookup.target/nss-lookup.target vboxadd.service vboxadd-service.service/g' /lib/systemd/system/apache2.service
+apt install -y php-{gd,curl,zip,pgsql,xml}
+
+echo enp0s3: \\4{enp0s3} >> /etc/issue
+echo enp0s8: \\4{enp0s8} >> /etc/issue
+echo "" >> /etc/issue
+
+echo "net.ipv4.ip_forward=0" > /etc/sysctl.conf
+echo "net.ipv4.conf.default.rp_filter=1" >> /etc/sysctl.conf
+echo "net.ipv4.conf.all.rp_filter=1" >> /etc/sysctl.conf
+echo "net.ipv4.conf.all.accept_redirects=0" >> /etc/sysctl.conf
+echo "net.ipv4.conf.all.secure_redirects=0" >> /etc/sysctl.conf
+echo "net.ipv4.conf.all.accept_source_route=0" >> /etc/sysctl.conf
+
+ln -s /etc/apache2/apache2.conf ~/
+ln -s /etc/apache2/sites-enabled/000-default.conf ~/
+echo tail -f /var/log/apache2/*.log > ~/view_logs
+chmod +x ~/view_logs
+
+iptables -F
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -A INPUT -m state --state ESTABLISHED -j ACCEPT
+iptables -A INPUT -m state --state NEW -p tcp --dport 80 -j ACCEPT
+iptables-save > /etc/firewall
+
+echo "#! /bin/bash" > /etc/network/if-pre-up.d/iptables
+echo "" >> /etc/network/if-pre-up.d/iptables
+echo "iptables-restore < /etc/firewall" >> /etc/network/if-pre-up.d/iptables
+chmod +x /etc/network/if-pre-up.d/iptables
+
+apt install  -y
+sudo -i -u postgres psql -c "CREATE DATABASE nextcloud;"
+sudo -i -u postgres psql -c "CREATE USER nextcloud WITH password 'nextcloud';"
+sudo -i -u postgres psql -c "GRANT ALL privileges ON DATABASE nextcloud TO nextcloud;"
+
+function eof {
+  cd;
+  rm -rf ~/httpd;
+  systemctl reboot;
+}
+
+trap eof EXIT
