@@ -11,7 +11,18 @@ sed -i 's/nss-lookup.target/nss-lookup.target vboxadd.service vboxadd-service.se
 apt install -y php-{gd,curl,zip,pgsql,xml,mbstring}
 chown www-data /var/www/html
 service apache2 restart
-rm -rf /var/www/html/* && git clone https://github.com/nextcloud/server /var/www/html/
+
+pushd /var/www
+rm -rf html
+curl -s https://nextcloud.com/install/#instructions-server | grep -o -E 'href="([^"#]+)"' | cut -d'"' -f2 | grep "/releases/" | grep ".zip" | grep -v ".zip." | head -1 | xargs -n1 wget
+unzip nextcloud*.zip
+mv nextcloud html
+grep -v ");" html/config/config.php > html/config/config2.php
+echo ");" >> html/config/config2.php
+mv html/config/config2.php html/config/config.php
+chown -R www-data html
+popd
+
 #wget https://download.nextcloud.com/server/installer/setup-nextcloud.php -O /var/www/html/setup.php
 #chmod 755 /var/www/html/setup.php
 
