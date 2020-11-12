@@ -20,9 +20,12 @@ mv nextcloud html
 chown -R www-data html
 cd html
 sudo -u www-data php occ maintenance:install --database "pgsql" --database-name "nextcloud" --database-user "nextcloud" --database-pass "nextcloud" --admin-user "admin" --admin-pass "admin"
+sleep 10
 grep -v ");" config/config.php > config/config2.php
 echo ");" >> config/config2.php
 mv config/config2.php config/config.php
+cat config/config.php
+sleep 10
 popd
 
 #wget https://download.nextcloud.com/server/installer/setup-nextcloud.php -O /var/www/html/setup.php
@@ -39,10 +42,8 @@ echo "net.ipv4.conf.all.accept_redirects=0" >> /etc/sysctl.conf
 echo "net.ipv4.conf.all.secure_redirects=0" >> /etc/sysctl.conf
 echo "net.ipv4.conf.all.accept_source_route=0" >> /etc/sysctl.conf
 
-ln -s /etc/apache2/apache2.conf ~/
-ln -s /etc/apache2/sites-enabled/000-default.conf ~/
-echo tail -f /var/log/apache2/*.log > ~/view_logs
-chmod +x ~/view_logs
+echo tail -f /var/log/apache2/*.log > ~/bin/view_logs
+chmod +x ~/bin/view_logs
 
 iptables -F
 iptables -P INPUT DROP
