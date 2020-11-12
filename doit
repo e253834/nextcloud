@@ -35,6 +35,7 @@ iptables -F
 iptables -P INPUT DROP
 iptables -P FORWARD DROP
 iptables -A INPUT -m state --state ESTABLISHED -j ACCEPT
+iptables -A INPUT -i lo -j ACCEPT
 iptables -A INPUT -m state --state NEW -p tcp --dport 80 -j ACCEPT
 iptables-save > /etc/firewall
 
@@ -43,10 +44,14 @@ echo "" >> /etc/network/if-pre-up.d/iptables
 echo "iptables-restore < /etc/firewall" >> /etc/network/if-pre-up.d/iptables
 chmod +x /etc/network/if-pre-up.d/iptables
 
-apt install  -y
 sudo -i -u postgres psql -c "CREATE DATABASE nextcloud;"
 sudo -i -u postgres psql -c "CREATE USER nextcloud WITH password 'nextcloud';"
 sudo -i -u postgres psql -c "GRANT ALL privileges ON DATABASE nextcloud TO nextcloud;"
+
+#CREATE USER nextcloud WITH PASSWORD 'nextcloud';
+#CREATE DATABASE nextcloud TEMPLATE template0 ENCODING 'UNICODE';
+#ALTER DATABASE nextcloud OWNER TO nextcloud;
+#GRANT ALL PRIVILEGES ON DATABASE nextcloud TO nextcloud;
 
 function eof {
   cd;
