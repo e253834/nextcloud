@@ -20,11 +20,14 @@ rm -rf html
 mv nextcloud html
 mv ~/nextcloud/pgsql.php .
 chown -R www-data html
-rm nextcloud.z??
+rm nextcloud.part??
 cd html
+sudo -i -u postgres psql -c "CREATE DATABASE nextcloud;"
+sudo -i -u postgres psql -c "CREATE USER nextcloud WITH password 'nextcloud';"
+sudo -i -u postgres psql -c "GRANT ALL privileges ON DATABASE nextcloud TO nextcloud;"
 sudo -u www-data php occ maintenance:install --database "pgsql" --database-name "nextcloud" --database-user "nextcloud" --database-pass "nextcloud" --admin-user "admin" --admin-pass "admin"
-sleep 15
 grep -v ");" config/config.php > config/config2.php
+echo "  "\'allow_local_remote_servers\' =\> \'true\'," >> config/config2.php
 echo ");" >> config/config2.php
 mv config/config2.php config/config.php
 chown www-data config/config.php
@@ -61,10 +64,6 @@ echo "#! /bin/bash" > /etc/network/if-pre-up.d/iptables
 echo "" >> /etc/network/if-pre-up.d/iptables
 echo "iptables-restore < /etc/firewall" >> /etc/network/if-pre-up.d/iptables
 chmod +x /etc/network/if-pre-up.d/iptables
-
-sudo -i -u postgres psql -c "CREATE DATABASE nextcloud;"
-sudo -i -u postgres psql -c "CREATE USER nextcloud WITH password 'nextcloud';"
-sudo -i -u postgres psql -c "GRANT ALL privileges ON DATABASE nextcloud TO nextcloud;"
 
 #CREATE USER nextcloud WITH PASSWORD 'nextcloud';
 #CREATE DATABASE nextcloud TEMPLATE template0 ENCODING 'UNICODE';
