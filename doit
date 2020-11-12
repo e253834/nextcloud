@@ -3,6 +3,10 @@
 hostnamectl set-hostname nextcloud
 sed -i 's/x6/nextcloud/g' /etc/hosts
 
+sudo -i -u postgres psql -c "CREATE DATABASE nextcloud;"
+sudo -i -u postgres psql -c "CREATE USER nextcloud WITH password 'nextcloud';"
+sudo -i -u postgres psql -c "GRANT ALL privileges ON DATABASE nextcloud TO nextcloud;"
+
 umount /var/www/html
 chgrp vboxsf /var/www
 apt install -y apache2 postgresql php curl unzip
@@ -13,6 +17,7 @@ apt install -y php-{gd,curl,zip,pgsql,xml,mbstring}
 service apache2 restart
 
 pushd /var/www
+
 mv ~/nextcloud/nextcloud.part?? .
 cat nextcloud.part?? > nextcloud.tar.xz
 tar -xJvf nextcloud.tar.xz
@@ -22,9 +27,6 @@ mv ~/nextcloud/pgsql.php .
 chown -R www-data html
 rm nextcloud.part??
 cd html
-sudo -i -u postgres psql -c "CREATE DATABASE nextcloud;"
-sudo -i -u postgres psql -c "CREATE USER nextcloud WITH password 'nextcloud';"
-sudo -i -u postgres psql -c "GRANT ALL privileges ON DATABASE nextcloud TO nextcloud;"
 sudo -u www-data php occ maintenance:install --database "pgsql" --database-name "nextcloud" --database-user "nextcloud" --database-pass "nextcloud" --admin-user "admin" --admin-pass "admin"
 grep -v ");" config/config.php > config/config2.php
 echo "  'allow_local_remote_servers' => 'true'," >> config/config2.php
@@ -32,6 +34,11 @@ echo ");" >> config/config2.php
 mv config/config2.php config/config.php
 sed -i 's/localhost/*/g' config/config.php
 chown www-data config/config.php
+
+git clone https://github.com/ONLYOFFICE/onlyoffice-nextcloud.git apps/onlyoffice
+chown -R www-data:www-data apps/onlyoffice
+sudo -u www-data php occ app:enable onlyoffice
+
 popd
 
 #wget https://download.nextcloud.com/server/installer/setup-nextcloud.php -O /var/www/html/setup.php
