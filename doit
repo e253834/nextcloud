@@ -5,7 +5,7 @@ sed -i 's/x6/apache2/g'
 
 umount /var/www/html
 chgrp vboxsf /var/www
-apt install -y apache2 postgresql php
+apt install -y apache2 postgresql php curl
 usermod -aG vboxsf www-data
 sed -i 's/nss-lookup.target/nss-lookup.target vboxadd.service vboxadd-service.service/g' /lib/systemd/system/apache2.service
 apt install -y php-{gd,curl,zip,pgsql,xml,mbstring}
