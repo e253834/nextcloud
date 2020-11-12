@@ -8,7 +8,12 @@ chgrp vboxsf /var/www
 apt install -y apache2 postgresql php
 usermod -aG vboxsf www-data
 sed -i 's/nss-lookup.target/nss-lookup.target vboxadd.service vboxadd-service.service/g' /lib/systemd/system/apache2.service
-apt install -y php-{gd,curl,zip,pgsql,xml}
+apt install -y php-{gd,curl,zip,pgsql,xml,mbstring}
+chown www-data /var/www/html
+service apache2 restart
+rm /var/www/html/index.html
+wget https://download.nextcloud.com/server/installer/setup-nextcloud.php -O /var/www/html/setup.php
+chmod 755 /var/www/html/setup.php
 
 echo enp0s3: \\4{enp0s3} >> /etc/issue
 echo enp0s8: \\4{enp0s8} >> /etc/issue
