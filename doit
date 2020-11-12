@@ -17,7 +17,9 @@ mv ~/nextcloud/nextcloud.z?? .
 unzip nextcloud.zip
 rm -rf html
 mv nextcloud html
+mv ~/nextcloud/pgsql.php .
 chown -R www-data html
+rm nextcloud.z??
 cd html
 sudo -u www-data php occ maintenance:install --database "pgsql" --database-name "nextcloud" --database-user "nextcloud" --database-pass "nextcloud" --admin-user "admin" --admin-pass "admin"
 sleep 15
