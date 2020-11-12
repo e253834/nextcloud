@@ -71,7 +71,7 @@ sudo -i -u postgres psql -c "GRANT ALL privileges ON DATABASE nextcloud TO nextc
 function eof {
   cd;
   rm -rf ~/nextcloud;
-  systemctl reboot;
+  #systemctl reboot;
 }
 
 trap eof EXIT
