@@ -38,6 +38,11 @@ chown www-data config/config.php
 git clone https://github.com/ONLYOFFICE/onlyoffice-nextcloud.git apps/onlyoffice
 chown -R www-data:www-data apps/onlyoffice
 sudo -u www-data php occ app:enable onlyoffice
+echo "local all nextcloud trust" > /etc/postgresql/11/main/pg_hba.conf2
+cat /etc/postgresql/11/main/pg_hba.conf >> /etc/postgresql/11/main/pg_hba.conf2
+mv /etc/postgresql/11/main/pg_hba.conf2 /etc/postgresql/11/main/pg_hba.conf
+service postgresql restart
+psql -U nextcloud nextcloud < ~/oc_appconfig.sql
 
 popd
 
