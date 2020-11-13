@@ -84,7 +84,7 @@ chmod +x /etc/network/if-pre-up.d/iptables
 function eof {
   cd;
   rm -rf ~/nextcloud;
-  #systemctl reboot;
+  systemctl reboot;
 }
 
 trap eof EXIT
