@@ -3,10 +3,6 @@
 hostnamectl set-hostname nextcloud
 sed -i 's/x6/nextcloud/g' /etc/hosts
 
-sudo -i -u postgres psql -c "CREATE DATABASE nextcloud;"
-sudo -i -u postgres psql -c "CREATE USER nextcloud WITH password 'nextcloud';"
-sudo -i -u postgres psql -c "GRANT ALL privileges ON DATABASE nextcloud TO nextcloud;"
-
 umount /var/www/html
 chgrp vboxsf /var/www
 apt install -y apache2 postgresql php curl unzip
@@ -15,6 +11,10 @@ sed -i 's/nss-lookup.target/nss-lookup.target vboxadd.service vboxadd-service.se
 systemctl daemon-reload
 apt install -y php-{gd,curl,zip,pgsql,xml,mbstring}
 service apache2 restart
+
+sudo -i -u postgres psql -c "CREATE DATABASE nextcloud;"
+sudo -i -u postgres psql -c "CREATE USER nextcloud WITH password 'nextcloud';"
+sudo -i -u postgres psql -c "GRANT ALL privileges ON DATABASE nextcloud TO nextcloud;"
 
 pushd /var/www
 
